@@ -1,65 +1,42 @@
-# Multithreaded Web Crawler in C
+# Concurrent Web Crawler in C (libcurl + pthreads) 🌐⚙️
 
-Project Description:
+Downloads up to **100 URLs in parallel**, streams each page directly to disk, and produces a keyword-frequency report for *Linux*, *Science*, *Code*, *libcurl*, and *Kernel*.
 
+---
 
-## Roles:
+## ✨ Key Features
+| Area | Highlights |
+|------|------------|
+| **Multithreading** | One POSIX thread (`pthread`) per valid URL; thread-safe logs with `[INFO] / [WARNING] / [ERROR]` tags. |
+| **Robust I/O** | Graceful checks for missing `urls.txt`, file-open failures, and memory allocation errors. |
+| **HTTP Downloads** | Uses **libcurl**; streams directly to `page<N>.html` via a zero-copy `write_data` callback. |
+| **Keyword Analytics** | Scans every downloaded file character-by-character and tallies target words (case-insensitive). |
+| **Clean Build System** | Single-command workflow: `make all`, `make run`, `make clean`. |
 
-Scarlett – Thread Management & Input Handling
+---
 
-- Reads input URLs from 'urls.txt'
-- Validates URLs (must start with 'http://' or 'https://')
-- Creates one thread per valid URL using 'pthread'
-- Passes each thread the assigned URL and index
-- Logs which thread handles which URL
+## 📂 Project Structure
 
-Wenhao - Error Handling, Logging & Build System
+| File/Dir | Purpose |
+|----------|---------|
+| `crawler.c` | Entire application (input parsing, threading, downloads, and word counting). |
+| `Makefile` | Build / run / clean targets. |
+| `urls.txt` | One URL per line (HTTP or HTTPS). Edit to crawl different sites. |
 
-- Adds error handling for file access, memory allocation, and thread creation
-- Checks if urls.txt exists and prints an error if it cannot be opened
-- Verifies that at least one valid URL is loaded before starting threads
-- Uses perror() and fprintf(stderr, ...) to report runtime issues
-- Logs when the crawler starts and finishes, and when each thread begins and ends
-- Adds [INFO], [WARNING], and [ERROR] tags to log messages for clarity
+---
 
-Lucia - HTML Fetching & Storage
-- Integrate **libcurl** to perform concurrent HTTP GET requests.  
-- Write each page’s HTML into a uniquely named file: `page<index>.html`.  
-- Implement a `write_data` callback to stream downloads directly to disk.  
-- Log success (`[INFO]`) or failure (`[ERROR]`) for each download.
+## 🔧 Build & Run
 
-Dillon - Word Counting & Output
-+ Use file opening to get the html of page1, page2, and page3
-+ Use fgetc to build current string
-+ Compare current string with word list of linux, science, code, libcurl, and kernel
-+ Add 1 to count for respective word and display final count at end of main run
+```bash
+# 1 — clone repo then enter directory
+git clone https://github.com/YOUR_USERNAME/concurrent-web-crawler-c-libcurl.git
+cd concurrent-web-crawler-c-libcurl
 
-## Project Files
+# 2 — compile
+make            # or: make all
 
-| File          | Description                                  |
-|---------------|----------------------------------------------|
-| 'crawler.c'   | Main program: input handling and threading   |
-| 'Makefile'    | Build instructions using `make`              |
-| 'urls.txt'    | List of URLs to be processed (one per line)  |
+# 3 — run crawler (reads urls.txt automatically)
+make run
 
-## Install Required Packages
-
-(I am using Visual Studio Code with the WSL extension to work on the project inside the Ubuntu environment) -Scar
-
-- sudo apt update
-- sudo apt install build-essential make
-- sudo apt install dos2unix
-
-## How to Run
-
-Step 1: Navigate to the project folder
-
-cd ~/web-crawler
-
-Step 2: Compile the program
-
-make
-
-Step 3: Execute
-
-./crawler
+# 4 — optional: remove binary + downloaded HTML
+make clean
