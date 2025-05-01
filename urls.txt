@@ -1,0 +1,3 @@
+https://www.kernel.org/
+https://curl.se/docs/
+https://www.geeksforgeeks.org/data-structures/
